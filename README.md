@@ -1,6 +1,7 @@
 # Basic Expense Tracker
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+[![Django CI](https://github.com/LordZeusIsBack/Basic-Expense-Tracker/actions/workflows/django.yml/badge.svg)](https://github.com/LordZeusIsBack/Basic-Expense-Tracker/actions/workflows/django.yml)
 ![Django](https://img.shields.io/badge/Django-4.2.2-green.svg)
 ![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 
