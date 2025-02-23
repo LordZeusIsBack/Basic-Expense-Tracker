@@ -70,7 +70,7 @@
         <td>{{ expense.title }}</td>
         <td>{{ expense.amt }}</td>
         <td>{{ expense.category }}</td>
-        <td>{{ expense.datetime|date:"Y-m-d" }}</td>
+        <td>{{ expense.created_at|date:"Y-m-d" }}</td>
         <td>
           <form method="post" action="{% url 'delete_transaction' expense.id %}" style="display:inline;">
             {% csrf_token %}

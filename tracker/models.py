@@ -17,7 +17,11 @@ class TrackingHistory(models.Model):
         ('Entertainment', 'Entertainment'),
         ('Miscellaneous', 'Miscellaneous')
     ])
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.amt == '0': raise ValueError('0 is not a valid transaction')
+        super().save(*args, **kwargs)
 
 class CurrentBalance(models.Model):
     cur_bal = models.IntegerField(default=0)

@@ -16,17 +16,21 @@ def index(r):
             messages.info(r, 'Insufficient balance')
             return redirect('/')
         if int(amount) < 0: expense_type = 'Debit'
-        current_bal.cur_bal += int(amount)
-        current_bal.save()
-        TrackingHistory.objects.create(
-            current_balance = current_bal,
-            title=title,
-            amt=amount,
-            expense_type = expense_type,
-            category=category,
-            created_at=date_time
-        )
-        return redirect('/')
+        try:
+            current_bal.cur_bal += int(amount)
+            current_bal.save()
+            TrackingHistory.objects.create(
+                current_balance = current_bal,
+                title=title,
+                amt=amount,
+                expense_type = expense_type,
+                category=category,
+                created_at=date_time
+            )
+            return redirect('/')
+        except ValueError as e:
+            messages.info(r, str(e))
+            return redirect('/')
     transactions= TrackingHistory.objects.all().order_by('-created_at')
     total_balance, _ = CurrentBalance.objects.get_or_create(id=1)
     credited = sum(obj.amt for obj in transactions if obj.expense_type == 'Credit')
