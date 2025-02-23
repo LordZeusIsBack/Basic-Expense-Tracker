@@ -4,7 +4,7 @@ from django.db import models
 class TrackingHistory(models.Model):
     current_balance = models.ForeignKey('CurrentBalance', on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    expense_type = models.CharField(max_length=50, choices=[
+    expense_type = models.CharField(max_length=6, choices=[
         ('Credit', 'Credit'),
         ('Debit', 'Debit')
     ])

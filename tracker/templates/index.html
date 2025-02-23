@@ -4,9 +4,21 @@
 {% block title %}Expense Tracker{% endblock %}
 
 {% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <script>
+      alert("{{ message }}");
+    </script>
+  {% endfor %}
+{% endif %}
+
 <div class="container">
     <h1>Expense Tracker</h1>
-
+    <div class="balance-info">
+        <p>Total balance left: {{ total_balance }}</p>
+        <p style="color: green;">Credits: {{ total_credits }}</p>
+        <p style="color: red;">Debits: {{ total_debits }}</p>
+    </div>
     <!-- Add Expense Form -->
     <div class="form-section">
         <h2>Add Expense</h2>
@@ -41,39 +53,8 @@
 
     <!-- Expense List Table -->
     <div class="table-section">
-        <h2>Your Expenses</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% if expenses %}
-                {% for expense in expenses %}
-                <tr>
-                    <td>{{ expense.title }}</td>
-                    <td>{{ expense.amount }}</td>
-                    <td>{{ expense.category }}</td>
-                    <td>{{ expense.date }}</td>
-                    <td>
-                        <!-- Example edit/delete links -->
-                        <a href="{% url 'edit_expense' expense.id %}">Edit</a> |
-                        <a href="{% url 'delete_expense' expense.id %}">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="5" style="text-align: center;">No expenses yet.</td>
-                </tr>
-            {% endif %}
-            </tbody>
-        </table>
-    </div>
+    <h2>Your Expenses</h2>
+    {{ table_html|safe }}
+</div>
 </div>
 {% endblock content %}
