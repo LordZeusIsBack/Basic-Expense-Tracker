@@ -3,7 +3,8 @@ from django.utils import timezone
 from .models import TrackingHistory, CurrentBalance
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login, authenticate
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 @login_required(login_url='login')
@@ -49,9 +50,35 @@ def delete_transaction(r, id_of_transaction):
     return redirect('/')
 
 def login_view(r):
+    if r.method == 'POST':
+        login_input = r.POST.get('username')
+        password = r.POST.get('password')
+        user = authenticate(username=login_input, password=password)
+        if user:
+            login(r, user)
+            messages.success(r, 'You have been logged in')
+            return redirect('/')
+        messages.error(r, 'Invalid credentials')
+        return redirect('login')
     return render(r, 'login.html')
 
 def register_view(r):
+    if r.method == 'POST':
+        User = get_user_model()
+        user_name = r.POST.get('username')
+        email = r.POST.get('email')
+        password1 = r.POST.get('password2')
+        password2 = r.POST.get('password2')
+        if User.objects.filter(username=user_name).exists():
+            messages.info(r, 'Username already exists')
+            return redirect('registration')
+        if password1 != password2:
+            messages.error(r, 'Passwords do not match')
+            return redirect('registration')
+        user = User.objects.create_user(username=user_name, email=email, password=password1)
+        user.save()
+        messages.success(r, 'Account created successfully')
+        return redirect('login')
     return render(r, 'registration.html')
 
 def logout_view(r):
