@@ -15,7 +15,8 @@ def index(r):
         expense_type = 'Credit'
         category = r.POST.get('category')
         date_time = r.POST.get('date_time') or timezone.now()
-        current_bal, _ = CurrentBalance.objects.get_or_create(id = 1)
+        print(r.user)
+        current_bal, _ = CurrentBalance.objects.get_or_create(user=r.user)
         if current_bal.cur_bal + int(amount) < 0:
             messages.info(r, 'Insufficient balance')
             return redirect('/')
@@ -24,6 +25,7 @@ def index(r):
             current_bal.cur_bal += int(amount)
             current_bal.save()
             TrackingHistory.objects.create(
+                user=r.user,
                 current_balance = current_bal,
                 title=title,
                 amt=amount,
@@ -35,15 +37,16 @@ def index(r):
         except ValueError as e:
             messages.info(r, str(e))
             return redirect('/')
-    transactions= TrackingHistory.objects.all().order_by('-created_at')
-    total_balance, _ = CurrentBalance.objects.get_or_create(id=1)
+    transactions= TrackingHistory.objects.filter(user=r.user).order_by('-created_at')
+    total_balance, _ = CurrentBalance.objects.get_or_create(user=r.user)
     credited = sum(obj.amt for obj in transactions if obj.expense_type == 'Credit')
     debited = sum(obj.amt for obj in transactions if obj.expense_type == 'Debit')
     return render(r, 'index.html', context={'expenses': transactions, 'total_balance': total_balance.cur_bal, 'total_credits': credited, 'total_debits': debited})
 
+@login_required(login_url='login')
 def delete_transaction(r, id_of_transaction):
-    transaction = TrackingHistory.objects.get(id=id_of_transaction)
-    current_bal = CurrentBalance.objects.get(id=1)
+    transaction = TrackingHistory.objects.get(id=id_of_transaction, user=r.user)
+    current_bal = CurrentBalance.objects.get(id=transaction.current_balance.id, user=r.user)
     current_bal.cur_bal -= transaction.amt
     current_bal.save()
     transaction.delete()
