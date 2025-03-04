@@ -130,3 +130,14 @@ button[type="submit"]:hover {
 .navbar li a:hover {
     text-decoration: underline;
 }
+
+.navbar li a.button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #1e90ff;
+    border-radius: 4px;
+}
+
+.navbar li a.button:hover {
+    background-color: #1c86ee;
+}
