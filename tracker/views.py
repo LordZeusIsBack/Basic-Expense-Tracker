@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from .models import TrackingHistory, CurrentBalance
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 # Create your views here.
+@login_required(login_url='login')
 def index(r):
     if r.method == 'POST':
         title = r.POST.get('title')
@@ -44,3 +47,14 @@ def delete_transaction(r, id_of_transaction):
     current_bal.save()
     transaction.delete()
     return redirect('/')
+
+def login_view(r):
+    return render(r, 'login.html')
+
+def register_view(r):
+    return render(r, 'registration.html')
+
+def logout_view(r):
+    logout(r)
+    messages.success(r, 'You have been logged out')
+    return redirect('login')

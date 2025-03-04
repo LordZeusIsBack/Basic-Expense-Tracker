@@ -24,7 +24,10 @@ from tracker import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='home'),
-    path('delete/<int:id_of_transaction>/', views.delete_transaction, name='delete_transaction')
+    path('delete/<int:id_of_transaction>/', views.delete_transaction, name='delete_transaction'),
+    path('login-page/', views.login_view, name='login'),
+    path('registration/', views.register_view, name='registration'),
+    path('logout-page/', views.logout_view, name='logout')
 ]
 
 if settings.DEBUG: urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
