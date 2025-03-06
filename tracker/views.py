@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
 
 # Create your views here.
 @login_required(login_url='login')
@@ -39,8 +40,8 @@ def index(r):
             return redirect('/')
     transactions= TrackingHistory.objects.filter(user=r.user).order_by('-created_at')
     total_balance, _ = CurrentBalance.objects.get_or_create(user=r.user)
-    credited = sum(obj.amt for obj in transactions if obj.expense_type == 'Credit')
-    debited = sum(obj.amt for obj in transactions if obj.expense_type == 'Debit')
+    credited = TrackingHistory.objects.filter(user=r.user, expense_type='Credit').aggregate(Sum('amt'))['amt__sum'] or 0
+    debited = TrackingHistory.objects.filter(user=r.user, expense_type='Debit').aggregate(Sum('amt'))['amt__sum'] or 0
     return render(r, 'index.html', context={'expenses': transactions, 'total_balance': total_balance.cur_bal, 'total_credits': credited, 'total_debits': debited})
 
 @login_required(login_url='login')
