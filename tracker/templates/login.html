@@ -3,6 +3,14 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+{% if messages %}
+  {% for message in messages %}
+    <script>
+      alert("{{message}}")
+    </script>
+  {% endfor %}
+{% endif %}
+
 <div class="container">
     <h1>Login</h1>
     <div class="form-section">
