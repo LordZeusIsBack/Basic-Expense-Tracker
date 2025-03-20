@@ -18,9 +18,6 @@ def index(r):
         date_time = r.POST.get('date_time') or timezone.now()
         print(r.user)
         current_bal, _ = CurrentBalance.objects.get_or_create(user=r.user)
-        if current_bal.cur_bal + int(amount) < 0:
-            messages.info(r, 'Insufficient balance')
-            return redirect('/')
         if int(amount) < 0: expense_type = 'Debit'
         try:
             current_bal.cur_bal += int(amount)
